@@ -1,0 +1,37 @@
+name: Build PikaRadio packs
+
+on:
+  push:
+    branches: [main]
+    paths: ['songs/**', 'tools/**', '.github/workflows/build.yml']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+      - name: Build Java + Bedrock packs
+        run: python3 tools/build_packs.py
+      - name: SHA1 of Java pack (cho server.properties)
+        run: sha1sum PikaRadio-Java.zip
+      - name: Upload packs
+        uses: actions/upload-artifact@v4
+        with:
+          name: PikaRadio-packs
+          path: |
+            PikaRadio-Java.zip
+            PikaRadio-Bedrock.mcpack
+      - name: Create release on main
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: PikaRadio build ${{ github.run_number }}
+          files: |
+            PikaRadio-Java.zip
+            PikaRadio-Bedrock.mcpack
