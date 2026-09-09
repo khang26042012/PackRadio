@@ -26,12 +26,21 @@ jobs:
           path: |
             PikaRadio-Java.zip
             PikaRadio-Bedrock.mcpack
-      - name: Create release on main
+      - name: Create versioned release on main
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: PikaRadio build ${{ github.run_number }}
+          files: |
+            PikaRadio-Java.zip
+            PikaRadio-Bedrock.mcpack
+      - name: Update stable release (link co dinh, khong doi)
+        if: github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: stable
+          name: PikaRadio stable (link co dinh)
           files: |
             PikaRadio-Java.zip
             PikaRadio-Bedrock.mcpack
