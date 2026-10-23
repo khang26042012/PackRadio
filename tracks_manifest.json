@@ -6,7 +6,7 @@
     "key_bedrock": "radio.01_dieu_toa_x_2_phut_hon_speedup",
     "ogg": "01_01_dieu_toa_x_2_phut_hon_speedup.ogg",
     "duration": 130.461338,
-    "size_kb": 1882
+    "size_kb": 1200
   },
   {
     "index": 2,
@@ -15,7 +15,7 @@
     "key_bedrock": "radio.02_nhat_than_vo_duyen_tuy_am_mix",
     "ogg": "02_02_nhat_than_vo_duyen_tuy_am_mix.ogg",
     "duration": 1052.223878,
-    "size_kb": 15131
+    "size_kb": 10079
   },
   {
     "index": 3,
@@ -24,7 +24,7 @@
     "key_bedrock": "radio.03_tinh_ve_ban_hi_khang",
     "ogg": "03_03_tinh_ve_ban_hi_khang.ogg",
     "duration": 184.714762,
-    "size_kb": 2779
+    "size_kb": 1764
   },
   {
     "index": 4,
@@ -33,7 +33,7 @@
     "key_bedrock": "radio.04_cho_chut_x_noi_nay_co_anh_mix",
     "ogg": "04_04_cho_chut_x_noi_nay_co_anh_mix.ogg",
     "duration": 324.940068,
-    "size_kb": 4846
+    "size_kb": 3046
   },
   {
     "index": 5,
@@ -42,7 +42,7 @@
     "key_bedrock": "radio.05_cuoi_di_x_vay_cuoi_x_gedl_mix",
     "ogg": "05_05_cuoi_di_x_vay_cuoi_x_gedl_mix.ogg",
     "duration": 553.308299,
-    "size_kb": 8415
+    "size_kb": 5374
   },
   {
     "index": 6,
@@ -51,7 +51,7 @@
     "key_bedrock": "radio.06_fly_away_thefatrat_speedup",
     "ogg": "06_06_fly_away_thefatrat_speedup.ogg",
     "duration": 175.45,
-    "size_kb": 2115
+    "size_kb": 1470
   },
   {
     "index": 7,
@@ -60,6 +60,6 @@
     "key_bedrock": "radio.07_see_tinh_hoang_thuy_linh_speedup",
     "ogg": "07_07_see_tinh_hoang_thuy_linh_speedup.ogg",
     "duration": 132.353764,
-    "size_kb": 2063
+    "size_kb": 1337
   }
 ]

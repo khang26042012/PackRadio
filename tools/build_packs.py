@@ -15,20 +15,20 @@ def slug(name):
     base = re.sub(r"[^a-z0-9]+", "_", base).strip("_") or "track"
     return base[:40]
 
-def convert(src, dst, quality="4", sample_rate=44100, channels=2):
-    # Hi-Fi Stereo Transparency:
-    # -vn: Triệt tiêu 100% luồng video Theora/ảnh bìa rác (lấy lại 300KB-500KB rác mỗi bài)
-    # -map_metadata -1: Lột sạch metadata dư thừa
-    # -ac 2: Chuẩn Stereo 2 kênh tách bạch Trái/Phải không bị chụm âm thanh
-    # -ar 44100: Tần số lấy mẫu chuẩn CD 44.1kHz (bảo tồn trọn vẹn dải treble leng keng)
-    # -c:a libvorbis -q:a 4: ~128kbps VBR (chuẩn phòng thu trong veo, khử 100% nhiễu hạt)
+def convert(src, dst, bitrate="86k", sample_rate=44100, channels=2):
+    # Stereo 2-Channel Hi-Fi Clean (< 25MB total pack):
+    # -vn: Triet tieu 100% video Theora / anh thumbnail rac
+    # -map_metadata -1: Xoa sach moi metadata
+    # -ac 2: Stereo 2 kenh tach bach
+    # -ar 44100: 44.1kHz chuan CD giu tron ven dai treble
+    # -c:a libvorbis -b:a 86k: Chat luong am thanh sang ro, khong hat nhieu, dung luong goi < 25MB
     cmd = [
         "ffmpeg", "-y", "-i", src,
         "-vn", "-map_metadata", "-1",
         "-ac", str(channels),
         "-ar", str(sample_rate),
         "-c:a", "libvorbis",
-        "-q:a", str(quality),
+        "-b:a", str(bitrate),
         dst
     ]
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -55,7 +55,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--java-out", default=os.path.join(ROOT, "PikaRadio-Java.zip"))
     ap.add_argument("--bedrock-out", default=os.path.join(ROOT, "PikaRadio-Bedrock.mcpack"))
-    ap.add_argument("--quality", default="4", help="Vorbis quality 1-10 (default 4 ~128kbps stereo)")
+    ap.add_argument("--bitrate", default="86k", help="Vorbis bitrate (default: 86k for < 25MB pack)")
     ap.add_argument("--sample-rate", type=int, default=44100, help="Sample rate Hz (default: 44100)")
     ap.add_argument("--channels", type=int, default=2, help="Channels (default: 2 Stereo)")
     a = ap.parse_args()
@@ -87,7 +87,7 @@ def main():
         raw_sz = os.path.getsize(src_path)
         total_raw_sz += raw_sz
 
-        convert(src_path, dst_java, quality=a.quality, sample_rate=a.sample_rate, channels=a.channels)
+        convert(src_path, dst_java, bitrate=a.bitrate, sample_rate=a.sample_rate, channels=a.channels)
         shutil.copy(dst_java, dst_bed)
 
         ogg_sz = os.path.getsize(dst_java)
