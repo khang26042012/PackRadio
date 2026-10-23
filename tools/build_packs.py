@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Build Java + Bedrock radio packs tu songs/*.mp3 — Thuat toan V2 Ultra-Compression.
-Java: assets/pikaradio/sounds.json + sounds/*.ogg (mono 32kHz vorbis 32kbps, stream:true, no video)
+"""Build Java + Bedrock radio packs tu songs/*.mp3 — Thuat toan Stereo Hi-Fi Clean (No Grain/No Video).
+Java: assets/pikaradio/sounds.json + sounds/*.ogg (Stereo 44.1kHz vorbis q4 ~128kbps, stream:true, -vn)
 Bedrock: sounds/sound_definitions.json + sounds/*.ogg (tai su dung file ogg chung)
-Usage: python3 tools/build_packs.py [--java-out PikaRadio-Java.zip] [--bedrock-out PikaRadio-Bedrock.mcpack] [--bitrate 32k] [--stereo]
+Usage: python3 tools/build_packs.py [--java-out PikaRadio-Java.zip] [--bedrock-out PikaRadio-Bedrock.mcpack] [--quality 4]
 """
 import argparse, hashlib, json, os, re, shutil, subprocess, sys, time, uuid, zipfile
 
@@ -15,21 +15,20 @@ def slug(name):
     base = re.sub(r"[^a-z0-9]+", "_", base).strip("_") or "track"
     return base[:40]
 
-def convert(src, dst, bitrate="32k", sample_rate=32000, mono=True):
-    # V2 Ultra-Compression Algorithm:
-    # -vn: strip 100% video/thumbnail/cover art (tiet kiem 300KB-500KB moi bai)
-    # -map_metadata -1: xoa sach moi metadata
-    # -ac 1: Mono 1-channel (don toan bo bit vao vocal ca si, giam 50% dung luong)
-    # -ar 32000: 32kHz (tai tao hoan hao dải âm toi 16kHz, tron tria giong hat)
-    # -c:a libvorbis -b:a 32k: chuan Ogg Vorbis tuong thich 100% Minecraft
-    channels = ["-ac", "1"] if mono else ["-ac", "2"]
+def convert(src, dst, quality="4", sample_rate=44100, channels=2):
+    # Hi-Fi Stereo Transparency:
+    # -vn: Triệt tiêu 100% luồng video Theora/ảnh bìa rác (lấy lại 300KB-500KB rác mỗi bài)
+    # -map_metadata -1: Lột sạch metadata dư thừa
+    # -ac 2: Chuẩn Stereo 2 kênh tách bạch Trái/Phải không bị chụm âm thanh
+    # -ar 44100: Tần số lấy mẫu chuẩn CD 44.1kHz (bảo tồn trọn vẹn dải treble leng keng)
+    # -c:a libvorbis -q:a 4: ~128kbps VBR (chuẩn phòng thu trong veo, khử 100% nhiễu hạt)
     cmd = [
         "ffmpeg", "-y", "-i", src,
         "-vn", "-map_metadata", "-1",
-        *channels,
+        "-ac", str(channels),
         "-ar", str(sample_rate),
         "-c:a", "libvorbis",
-        "-b:a", bitrate,
+        "-q:a", str(quality),
         dst
     ]
     r = subprocess.run(cmd, capture_output=True, text=True)
@@ -56,19 +55,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--java-out", default=os.path.join(ROOT, "PikaRadio-Java.zip"))
     ap.add_argument("--bedrock-out", default=os.path.join(ROOT, "PikaRadio-Bedrock.mcpack"))
-    ap.add_argument("--bitrate", default="32k", help="Bitrate Vorbis (default: 32k)")
-    ap.add_argument("--sample-rate", type=int, default=32000, help="Sample rate Hz (default: 32000)")
-    ap.add_argument("--stereo", action="store_true", help="Keep stereo (default is Mono)")
+    ap.add_argument("--quality", default="4", help="Vorbis quality 1-10 (default 4 ~128kbps stereo)")
+    ap.add_argument("--sample-rate", type=int, default=44100, help="Sample rate Hz (default: 44100)")
+    ap.add_argument("--channels", type=int, default=2, help="Channels (default: 2 Stereo)")
     a = ap.parse_args()
 
-    mono = not a.stereo
     mp3s = sorted(f for f in os.listdir(SONG_DIR) if f.lower().endswith((".mp3", ".wav", ".m4a", ".ogg")))
     if not mp3s:
         print("Khong co file nhac nao trong songs/ !"); raise SystemExit(1)
     
-    print(f"🚀 [V2 Ultra-Compression] Tim thay {len(mp3s)} bai nhac trong songs/:")
-    for f in mp3s:
-        print(f"  - {f}")
+    print(f"🚀 [Hi-Fi Stereo 2-Channel] Tim thay {len(mp3s)} bai nhac trong songs/:")
 
     work = os.path.join(ROOT, "_work")
     shutil.rmtree(work, ignore_errors=True)
@@ -91,7 +87,7 @@ def main():
         raw_sz = os.path.getsize(src_path)
         total_raw_sz += raw_sz
 
-        convert(src_path, dst_java, bitrate=a.bitrate, sample_rate=a.sample_rate, mono=mono)
+        convert(src_path, dst_java, quality=a.quality, sample_rate=a.sample_rate, channels=a.channels)
         shutil.copy(dst_java, dst_bed)
 
         ogg_sz = os.path.getsize(dst_java)
@@ -110,13 +106,13 @@ def main():
             "duration": dur,
             "size_kb": ogg_sz // 1024
         })
-        print(f"  [{i:02d}] {fn[:35]:35s} -> {ogg_sz//1024:5d} KB (goc {raw_sz//1024:5d} KB) | {dur:.1f}s")
+        print(f"  [{i:02d}] {fn[:35]:35s} -> {ogg_sz//1024:5d} KB (goc {raw_sz//1024:5d} KB) | {dur:.1f}s | Stereo 44.1kHz")
 
     # Java pack
     with open(os.path.join(work, "java", f"assets/{NS}/sounds.json"), "w", encoding="utf-8") as f:
         json.dump(sounds_json, f, indent=2, ensure_ascii=False)
     with open(os.path.join(work, "java", "pack.mcmeta"), "w", encoding="utf-8") as f:
-        json.dump({"pack": {"pack_format": 48, "description": "PikaMC Radio V2 - Nhac that trong game"}}, f, indent=2)
+        json.dump({"pack": {"pack_format": 48, "description": "PikaMC Radio Hi-Fi - Nhac that trong game"}}, f, indent=2)
     
     if os.path.exists(a.java_out): os.remove(a.java_out)
     with zipfile.ZipFile(a.java_out, "w", zipfile.ZIP_DEFLATED) as z:
@@ -136,16 +132,16 @@ def main():
         json.dump({
             "format_version": 2,
             "header": {
-                "name": "PikaMC Radio V2",
-                "description": "Nhac that cho Bedrock (Ultra-Compressed V2)",
+                "name": "PikaMC Radio Hi-Fi",
+                "description": "Nhac that cho Bedrock (Stereo Hi-Fi Clean)",
                 "uuid": header_uuid,
-                "version": [2, 0, version_patch],
+                "version": [2, 1, version_patch],
                 "min_engine_version": [1, 20, 0]
             },
             "modules": [{
                 "type": "resources",
                 "uuid": module_uuid,
-                "version": [2, 0, version_patch]
+                "version": [2, 1, version_patch]
             }]
         }, f, indent=2)
     
@@ -168,12 +164,12 @@ def main():
     bed_sz = os.path.getsize(a.bedrock_out)
 
     print("\n" + "="*60)
-    print("🎉 [HOÀN TẤT ĐÓNG GÓI PACK RADIO V2]")
+    print("🎉 [HOÀN TẤT ĐÓNG GÓI PACK STEREO HI-FI CLEAN]")
     print(f"📦 JAVA PACK    : {a.java_out} ({java_sz / (1024*1024):.2f} MB)")
     print(f"🔑 JAVA SHA1    : {sha1_java}")
     print(f"📱 BEDROCK PACK : {a.bedrock_out} ({bed_sz / (1024*1024):.2f} MB)")
     print(f"📉 TỔNG GỐC     : {total_raw_sz / (1024*1024):.2f} MB ➔ SAU NÉN: {total_ogg_sz / (1024*1024):.2f} MB")
-    print(f"⚡ TIẾT KIỆM    : {(1.0 - (total_ogg_sz / total_raw_sz)) * 100:.1f}% dung lượng!")
+    print(f"⚡ TIẾT KIỆM    : {(1.0 - (total_ogg_sz / total_raw_sz)) * 100:.1f}% dung lượng (khử sạch video rác, giữ nguyên Stereo)")
     print("="*60)
 
 if __name__ == "__main__":
