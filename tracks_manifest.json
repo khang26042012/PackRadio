@@ -1,0 +1,65 @@
+[
+  {
+    "index": 1,
+    "filename": "01_dieu_toa_x_2_phut_hon_speedup.mp3",
+    "key_java": "pikaradio.01_dieu_toa_x_2_phut_hon_speedup",
+    "key_bedrock": "radio.01_dieu_toa_x_2_phut_hon_speedup",
+    "ogg": "01_01_dieu_toa_x_2_phut_hon_speedup.ogg",
+    "duration": 130.461344,
+    "size_kb": 477
+  },
+  {
+    "index": 2,
+    "filename": "02_nhat_than_vo_duyen_tuy_am_mix.mp3",
+    "key_java": "pikaradio.02_nhat_than_vo_duyen_tuy_am_mix",
+    "key_bedrock": "radio.02_nhat_than_vo_duyen_tuy_am_mix",
+    "ogg": "02_02_nhat_than_vo_duyen_tuy_am_mix.ogg",
+    "duration": 1052.223875,
+    "size_kb": 4385
+  },
+  {
+    "index": 3,
+    "filename": "03_tinh_ve_ban_hi_khang.mp3",
+    "key_java": "pikaradio.03_tinh_ve_ban_hi_khang",
+    "key_bedrock": "radio.03_tinh_ve_ban_hi_khang",
+    "ogg": "03_03_tinh_ve_ban_hi_khang.ogg",
+    "duration": 184.71475,
+    "size_kb": 706
+  },
+  {
+    "index": 4,
+    "filename": "04_cho_chut_x_noi_nay_co_anh_mix.mp3",
+    "key_java": "pikaradio.04_cho_chut_x_noi_nay_co_anh_mix",
+    "key_bedrock": "radio.04_cho_chut_x_noi_nay_co_anh_mix",
+    "ogg": "04_04_cho_chut_x_noi_nay_co_anh_mix.ogg",
+    "duration": 324.940063,
+    "size_kb": 1291
+  },
+  {
+    "index": 5,
+    "filename": "05_cuoi_di_x_vay_cuoi_x_gedl_mix.mp3",
+    "key_java": "pikaradio.05_cuoi_di_x_vay_cuoi_x_gedl_mix",
+    "key_bedrock": "radio.05_cuoi_di_x_vay_cuoi_x_gedl_mix",
+    "ogg": "05_05_cuoi_di_x_vay_cuoi_x_gedl_mix.ogg",
+    "duration": 553.308313,
+    "size_kb": 2302
+  },
+  {
+    "index": 6,
+    "filename": "06_fly_away_thefatrat_speedup.mp3",
+    "key_java": "pikaradio.06_fly_away_thefatrat_speedup",
+    "key_bedrock": "radio.06_fly_away_thefatrat_speedup",
+    "ogg": "06_06_fly_away_thefatrat_speedup.ogg",
+    "duration": 175.45,
+    "size_kb": 675
+  },
+  {
+    "index": 7,
+    "filename": "07_see_tinh_hoang_thuy_linh_speedup.mp3",
+    "key_java": "pikaradio.07_see_tinh_hoang_thuy_linh_speedup",
+    "key_bedrock": "radio.07_see_tinh_hoang_thuy_linh_speedup",
+    "ogg": "07_07_see_tinh_hoang_thuy_linh_speedup.ogg",
+    "duration": 132.35375,
+    "size_kb": 566
+  }
+]
